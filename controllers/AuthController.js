@@ -12,18 +12,21 @@ module.exports.Signup = async (req, res, next) => {
             return res.json({ message: "User already exists" });
         }
 
+        // const hashedPassword = await bcrypt.hash(password, 10); // Hashing the password
         const user = await User.create({ ename, email, password, createdAt });
 
         const token = createSecretToken(user._id);
 
         res.cookie("token", token, {
-            withCredentials: true,
-            httpOnly: false,
+            httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
+            secure: true, // Ensures the cookie is sent only over HTTPS
+            sameSite: 'None', // Required for cross-site cookies
         });
         res.status(201).json({ message: "User signed in successfully", success: "true", user });
         next();
     } catch (error) {
         console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -45,16 +48,17 @@ module.exports.Login = async (req, res, next) => {
 
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
-            withCredentials: true,
-            httpOnly: false,
+            httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not accessible via JavaScript
+            secure: true, // Ensures the cookie is sent only over HTTPS
+            sameSite: 'None', // Required for cross-site cookies
         });
         res.status(201).json({ message: "User logged in successfully", success: true });
-        next()
+        next();
     } catch (error) {
         console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
-
 module.exports.Listevent = async (req, res) => {
     try {
         const events = await Records.find({});
