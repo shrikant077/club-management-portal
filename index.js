@@ -23,7 +23,7 @@ mongoose.connect(MONGO_URI, {
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "https://tmslevents.netlify.app"], // Allow specific origins
+    origin: ["https://tmslevents.netlify.app"], // Allow specific origins
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
 }));
